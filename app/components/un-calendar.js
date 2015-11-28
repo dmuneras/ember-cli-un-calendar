@@ -1,0 +1,1 @@
+export { default } from 'ember-cli-un-calendar/components/un-calendar';

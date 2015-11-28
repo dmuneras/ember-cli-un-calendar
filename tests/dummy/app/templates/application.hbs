@@ -1,3 +1,12 @@
-<h2 id="title">Welcome to Ember</h2>
+<h2 id="title">Ember cli un calendar</h2>
 
-{{outlet}}
+{{un-calendar
+  todayLabel="<div>Today</div>"
+  prevLabel="<div>Previous</div>"
+  nextLabel="<div>Next</div>"
+  month = month
+  showNextMonth=showNextMonth
+  showPrevMonth=showPrevMonth
+  select="dateSelected"
+  maxFutureDate= maxFutureDelivery
+}}
