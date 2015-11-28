@@ -46,8 +46,9 @@ export default Ember.Component.extend({
   month:         null,
   selectedDates: null,
   disabledDates: null,
+  addDateNameOnTop: true,
 
-  validateSelectedDates: Ember.on('init', function(){
+  validateSelectedDates: Ember.on('init', function() {
     if (!this.get('selectedDates')) {
       throw 'you must provide selectedDates to un-calendar-month';
     }
@@ -57,9 +58,23 @@ export default Ember.Component.extend({
     this.setSelectedDates();
   }),
 
-  addCalendar: Ember.on('willRender', function(){
-    this.set('calendarHTML',this.renderCalendar([]).join(''));
+  addCalendar: Ember.on('willRender', function() {
+    let localBuffer = [];
+    if (this.get('addDateNameOnTop')) {
+      localBuffer = this.addDayNamesToLocalBuffer();
+    }
+
+    this.set('calendarHTML', this.renderCalendar(localBuffer).join(''));
   }),
+
+  addDayNamesToLocalBuffer: function() {
+    let localBuffer = [];
+    ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(function(day) {
+      localBuffer.push('<li class = "un-calendar-slot">' + day + '</li>');
+    });
+
+    return localBuffer;
+  },
 
   click: function(event) {
     var $target = Ember.$(event.target);
@@ -73,18 +88,13 @@ export default Ember.Component.extend({
     }
   },
 
-  monthDidChange: Ember.observer('month', function() {
-    console.log('month changed');
-    //Ember.run.once('afterRender', this, 'rerender');
-  }),
-
-  selectedDatesDidChange: Ember.observer('selectedDates.@each', function(){
+  selectedDatesDidChange: Ember.observer('selectedDates.@each', function() {
     Ember.run.scheduleOnce('afterRender', this, 'setSelectedDates');
   }),
 
   setSelectedDates: function() {
     var dates = this.get('selectedDates'),
-        view  = this,
+        _this  = this,
         json;
 
     if (this._state !== 'inDOM') {
@@ -95,20 +105,20 @@ export default Ember.Component.extend({
 
     dates.forEach(function(date) {
       json = date.format('YYYY-MM-DD');
-      view.$('[data-date="' + json + '"]').addClass('is-selected');
+      _this.$('[data-date="' + json + '"]').addClass('is-selected');
     });
   },
 
   renderCalendar: function(buff) {
-    var month = this.get('month'),
-        view  = this;
+    let month = this.get('month'),
+        _this = this;
 
     if (!month) {
       return;
     }
 
     function renderSlot(slot) {
-      var attrs, template;
+      let attrs, template;
 
       if (slot) {
         attrs = {
@@ -117,9 +127,9 @@ export default Ember.Component.extend({
           classNames: ['un-calendar-slot', 'un-calendar-day']
         };
 
-        view.applyOptionsForDate(attrs, slot);
+        _this.applyOptionsForDate(attrs, slot);
 
-        template = '<li class="'+ attrs.classNames.join(' ') + '" data-date="' + attrs.jsonDate + '">' + attrs.date + '</li>';
+        template = '<li class="' + attrs.classNames.join(' ') + '" data-date="' + attrs.jsonDate + '">' + attrs.date + '</li>';
 
         buff.push(template);
       } else {
@@ -130,6 +140,7 @@ export default Ember.Component.extend({
     forEachSlot(month, function(slot) {
       renderSlot(slot);
     });
+
     return buff;
   },
 

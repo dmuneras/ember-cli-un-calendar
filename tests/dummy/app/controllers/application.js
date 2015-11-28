@@ -7,13 +7,13 @@ export default Ember.Controller.extend({
 
   maxFutureDelivery: Ember.computed({
     get: function() {
-      return moment().add(12,'months');
+      return moment().add(12, 'months');
     }
   }).volatile(),
 
   actions: {
-    dateeSelected: function(){
-      console.log('date selected');
+    dateSelected: function(date) {
+      console.log('date selected: ' + date.format('YYYY-MM-DD'));
     }
   }
 });
