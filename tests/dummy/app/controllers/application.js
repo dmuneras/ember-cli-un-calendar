@@ -4,6 +4,7 @@ export default Ember.Controller.extend({
   month: moment(),
   showNextMonth: false,
   showPrevMotnh: false,
+  multiple: true,
 
   maxFutureDelivery: Ember.computed({
     get: function() {
