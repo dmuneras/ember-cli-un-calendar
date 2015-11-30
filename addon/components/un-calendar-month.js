@@ -1,44 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/un-calendar-month';
 
-function containsDate(dates, date) {
-  if (!dates || !Ember.get(dates, 'length')) {
-    return false;
-  }
-
-  return dates.any(function(d) {
-    return date.isSame(d, 'day');
-  });
-}
-
-function forEachSlot(month, iter) {
-  var totalDays  = month.daysInMonth(),
-      firstDay   = month.clone().startOf('month').weekday(),
-      currentDay = 1;
-
-  function popCurrentDay() {
-    if (currentDay > totalDays) {
-      return null;
-    } else {
-      return moment([month.year(), month.month(), currentDay++]);
-    }
-  }
-
-  for (var week = 0; week <= 6; week++) {
-    for (var day = 0; day <= 6; day++) {
-      if (week === 0) {
-        iter(day < firstDay ? null : popCurrentDay());
-      } else {
-        iter(currentDay <= totalDays ? popCurrentDay() : null);
-      }
-    }
-
-    if (currentDay > totalDays) {
-      break;
-    }
-  }
-}
-
 export default Ember.Component.extend({
   layout: layout,
   tagName:      'ol',
@@ -50,7 +12,7 @@ export default Ember.Component.extend({
 
   validateSelectedDates: Ember.on('init', function() {
     if (!this.get('selectedDates')) {
-      throw 'you must provide selectedDates to un-calendar-month';
+      this.set('selectedDates', Ember.A([]));
     }
   }),
 
@@ -88,7 +50,7 @@ export default Ember.Component.extend({
     }
   },
 
-  selectedDatesDidChange: Ember.observer('selectedDates.@each', function() {
+  selectedDatesDidChange: Ember.observer('selectedDates.[]', function() {
     Ember.run.scheduleOnce('afterRender', this, 'setSelectedDates');
   }),
 
@@ -117,7 +79,7 @@ export default Ember.Component.extend({
       return;
     }
 
-    function renderSlot(slot) {
+    let renderSlot = function(slot) {
       let attrs, template;
 
       if (slot) {
@@ -135,9 +97,9 @@ export default Ember.Component.extend({
       } else {
         buff.push('<li class="un-calendar-slot un-calendar-empty"></li>');
       }
-    }
+    };
 
-    forEachSlot(month, function(slot) {
+    this.forEachSlot(month, function(slot) {
       renderSlot(slot);
     });
 
@@ -152,12 +114,50 @@ export default Ember.Component.extend({
       options.classNames.push('is-today');
     }
 
-    if (disabledDates && containsDate(disabledDates, date)) {
+    if (disabledDates && this.containsDate(disabledDates, date)) {
       options.classNames.push('is-disabled');
     }
 
-    if (selectedDates && containsDate(selectedDates, date)) {
+    if (selectedDates && this.containsDate(selectedDates, date)) {
       options.classNames.push('is-selected');
     }
   },
+
+  containsDate: function(dates, date) {
+    if (!dates || !Ember.get(dates, 'length')) {
+      return false;
+    }
+
+    return Ember.A(dates).any(function(d) {
+      return date.isSame(d, 'day');
+    });
+  },
+
+  forEachSlot: function(month, iter) {
+    let totalDays  = month.daysInMonth(),
+        firstDay   = month.clone().startOf('month').weekday(),
+        currentDay = 1;
+
+    let popCurrentDay =  function() {
+      if (currentDay > totalDays) {
+        return null;
+      } else {
+        return moment([month.year(), month.month(), currentDay++]);
+      }
+    };
+
+    for (var week = 0; week <= 6; week++) {
+      for (var day = 0; day <= 6; day++) {
+        if (week === 0) {
+          iter(day < firstDay ? null : popCurrentDay());
+        } else {
+          iter(currentDay <= totalDays ? popCurrentDay() : null);
+        }
+      }
+
+      if (currentDay > totalDays) {
+        break;
+      }
+    }
+  }
 });

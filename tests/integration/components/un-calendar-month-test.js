@@ -1,26 +1,30 @@
-import { moduleForComponent, test } from 'ember-qunit';
+/* jshint expr:true */
+import { expect } from 'chai';
+import {
+  describeComponent,
+  it
+} from 'ember-mocha';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('un-calendar-month', 'Integration | Component | un calendar month', {
-  integration: true
-});
-
-test('it renders', function(assert) {
-  assert.expect(2);
-
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
-
-  this.render(hbs`{{un-calendar-month}}`);
-
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#un-calendar-month}}
-      template block text
-    {{/un-calendar-month}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
-});
+describeComponent(
+  'un-calendar-month',
+  'Integration: UnCalendarMonth',
+  {
+    integration: true
+  },
+  function() {
+    it('renders', function() {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.on('myAction', function(val) { ... });
+      // Template block usage:
+      // this.render(hbs`
+      //   {{#un-calendar-month}}
+      //     template content
+      //   {{/un-calendar-month}}
+      // `);
+      this.set('month', moment());
+      this.render(hbs`{{un-calendar-month month=month}}`);
+      expect(this.$()).to.have.length(1);
+    });
+  }
+);
