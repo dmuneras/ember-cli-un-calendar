@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/un-calendar-month';
+import moment from 'moment';
 
 export default Ember.Component.extend({
   layout: layout,
