@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-un-calendar",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Calendar component for ember cli - based on un-calendar ember component but this one works with Ember <= 1.10",
   "directories": {
     "doc": "doc",
