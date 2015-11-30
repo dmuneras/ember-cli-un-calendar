@@ -65,13 +65,13 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.un-calendar-slot   .un-calendar-slot.is-today {
+.un-calendar-slot.is-today {
   background: #edc;
 }
-.un-calendar-slot   .un-calendar-slot.is-selected {
+.un-calendar-slot.is-selected {
   background: #cde;
 }
-.un-calendar-slot   .un-calendar-slot.is-disabled {
+.un-calendar-slot.is-disabled {
   background: #eee;
   color: #999;
   cursor: default;

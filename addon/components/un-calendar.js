@@ -25,17 +25,12 @@ export default Ember.Component.extend({
   selectedDate:        null,
 
   initFuction: Ember.on('init', function() {
-    if (!this.get('selectedDates')) {
-      this.set('selectedDates', Ember.A([]));
-    } else {
-      this.set('multiple', true);
-    }
-
+    this.set('selectedDates', Ember.A([]));
     if (this.get('selectedDate')) {
       this.get('selectedDates').addObject(this.get('selectedDate'));
     }
 
-    var firstSelectedDate = this.get('selectedDates.firstObject');
+    let firstSelectedDate = this.get('selectedDates.firstObject');
 
     if (!this.get('month') && firstSelectedDate) {
       this.set('month', firstSelectedDate.clone().startOf('month'));
@@ -51,7 +46,7 @@ export default Ember.Component.extend({
   }),
 
   selectedDateDidChange: Ember.observer('selectedDates', function() {
-    var date = this.get('selectedDate');
+    let date = this.get('selectedDate');
 
     if (!date) {
       return;
@@ -68,21 +63,21 @@ export default Ember.Component.extend({
 
   prevMonth: Ember.computed('month', {
     get: function() {
-      var month = this.get('month');
+      let month = this.get('month');
       return month ? month.clone().subtract(1, 'months') : null;
     }
   }),
 
   nextMonth: Ember.computed('month', {
     get: function() {
-      var month = this.get('month');
+      let month = this.get('month');
       return month ? month.clone().add(1, 'months') : null;
     }
   }),
 
   isNextMonthInFuture: Ember.computed('nextMonth', 'now', {
     get: function() {
-      var nextMonth = this.get('nextMonth'),
+      let nextMonth = this.get('nextMonth'),
           now       = this.get('now');
       return nextMonth ? nextMonth.isAfter(now, 'month') : false;
     }
@@ -90,7 +85,7 @@ export default Ember.Component.extend({
 
   isPrevMonthInPast: Ember.computed('prevMonth', 'now', {
     get: function() {
-      var prevMonth = this.get('prevMonth'),
+      let prevMonth = this.get('prevMonth'),
         now       = this.get('now');
       return prevMonth ? prevMonth.isBefore(now, 'month') : false;
     }
@@ -98,7 +93,7 @@ export default Ember.Component.extend({
 
   isPrevMonthBeyondMax: Ember.computed('prevMonth', 'maxPastDate', {
     get: function() {
-      var prevMonth   = this.get('prevMonth'),
+      let prevMonth   = this.get('prevMonth'),
         maxPastDate = this.get('maxPastDate');
 
       if (!prevMonth || !maxPastDate) {
@@ -111,7 +106,7 @@ export default Ember.Component.extend({
 
   isNextMonthBeyondMax: Ember.computed('nextMonth', 'maxFutureDate', {
     get: function() {
-      var nextMonth     = this.get('nextMonth'),
+      let nextMonth     = this.get('nextMonth'),
         maxFutureDate = this.get('maxFutureDate');
 
       if (!nextMonth || !maxFutureDate) {
@@ -175,8 +170,8 @@ export default Ember.Component.extend({
   },
 
   removeDate: function(date) {
-    var dates = this.get('selectedDates');
-    var removeDates;
+    let dates = this.get('selectedDates');
+    let removeDates;
 
     removeDates = dates.filter(function(d) {
       return d.isSame(date);
@@ -191,14 +186,13 @@ export default Ember.Component.extend({
   },
 
   cpFormatMoment: function(key, format) {
-    var date = this.get(key);
+    let date = this.get(key);
     return date ? date.format(format) : null;
   },
 
   actions: {
     dateSelected: function(date) {
       this.sendAction('select', date);
-
       if (this.get('disableManipulation')) {
         return;
       }

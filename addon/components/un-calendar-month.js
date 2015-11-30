@@ -13,11 +13,23 @@ export default Ember.Component.extend({
   validateSelectedDates: Ember.on('init', function() {
     if (!this.get('selectedDates')) {
       this.set('selectedDates', Ember.A([]));
+    }else {
+      this.set('selectedDates', Ember.A(this.get('selectedDates')));
     }
   }),
 
-  selectedDatesWhenInsert: Ember.on('didInsertElement', function() {
-    this.setSelectedDates();
+  selectedDatesFormatted: Ember.computed('selectedDates.[]', {
+    get: function() {
+      return Ember.A(this.get('selectedDates').map(function(date) {
+        return date.format('YYYY-MM-DD');
+      }));
+    }
+  }),
+
+  selectedDatesFormattedChanged: Ember.observer('selectedDatesFormatted.[]', function() {
+    this.get('selectedDatesFormatted').forEach((date) => {
+      this.$('.un-calendar-day[data-date="' + date + '"]').addClass('is-selected');
+    });
   }),
 
   addCalendar: Ember.on('willRender', function() {
@@ -50,27 +62,6 @@ export default Ember.Component.extend({
     }
   },
 
-  selectedDatesDidChange: Ember.observer('selectedDates.[]', function() {
-    Ember.run.scheduleOnce('afterRender', this, 'setSelectedDates');
-  }),
-
-  setSelectedDates: function() {
-    var dates = this.get('selectedDates'),
-        _this  = this,
-        json;
-
-    if (this._state !== 'inDOM') {
-      return;
-    }
-
-    this.$('li').removeClass('is-selected');
-
-    dates.forEach(function(date) {
-      json = date.format('YYYY-MM-DD');
-      _this.$('[data-date="' + json + '"]').addClass('is-selected');
-    });
-  },
-
   renderCalendar: function(buff) {
     let month = this.get('month'),
         _this = this;
@@ -88,6 +79,10 @@ export default Ember.Component.extend({
           jsonDate:   slot.format('YYYY-MM-DD'),
           classNames: ['un-calendar-slot', 'un-calendar-day']
         };
+
+        if (_this.get('selectedDatesFormatted').contains(attrs.jsonDate)) {
+          attrs.classNames.push('is-selected');
+        }
 
         _this.applyOptionsForDate(attrs, slot);
 

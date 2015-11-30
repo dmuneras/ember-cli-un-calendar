@@ -26,5 +26,12 @@ describeComponent(
       this.render(hbs`{{un-calendar-month month=month}}`);
       expect(this.$()).to.have.length(1);
     });
+
+    it('renders month slots', function() {
+      this.set('month', moment('11-11-2015', 'MM-DD-YYYY'));
+      this.render(hbs`{{un-calendar-month month=month}}`);
+      expect(this.$('.un-calendar-slot')).to.have.length(42);
+      expect(this.$('.un-calendar-day')).to.have.length(30);
+    });
   }
 );
