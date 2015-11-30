@@ -28,6 +28,7 @@ export default Ember.Component.extend({
   }),
 
   selectedDatesFormattedChanged: Ember.observer('selectedDatesFormatted.[]', function() {
+    this.$('.un-calendar-day').removeClass('is-selected');
     this.get('selectedDatesFormatted').forEach((date) => {
       this.$('.un-calendar-day[data-date="' + date + '"]').addClass('is-selected');
     });

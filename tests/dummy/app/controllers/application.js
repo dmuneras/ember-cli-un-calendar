@@ -26,7 +26,7 @@ export default Ember.Controller.extend({
 
   actions: {
     dateSelected: function(date) {
-      console.log('date selected: ' + date.format('YYYY-MM-DD'));
+      this.set('currentDate', date);
     }
   }
 });
